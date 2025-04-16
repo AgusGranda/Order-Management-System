@@ -1,15 +1,18 @@
-﻿using ProductService.Interfaces;
+﻿using ProductService.Data;
+using ProductService.Interfaces;
 using ProductService.Models;
 
-namespace ProductService.Services
+namespace ProductService.Repositories
 {
-    public class ProductServiceImp : IProductService
+    public class ProductRepository : IProductRepository
     {
-        private readonly IProductRepository _productRepository;
-        public ProductServiceImp(IProductRepository productRepository)
+        private readonly DbContext _dbContext;
+        public ProductRepository(DbContext dbContext) 
         {
-            _productRepository = productRepository;
+            _dbContext = dbContext;
         }
+
+
 
         public Task AddProduct(Product product)
         {
@@ -28,16 +31,12 @@ namespace ProductService.Services
 
         public Task<List<Product>> GetAllProducts()
         {
-            throw new NotImplementedException();
+            return _dbContext.Products.ToList();
         }
 
-        public async Task<Product> GetOneProduct(int productId)
+        public Task<Product> GetOneProduct(int productId)
         {
-            var product = _productRepository.GetOneProduct(productId);
-            if(product != null)
-                return product;
-
-            return null;
+            throw new NotImplementedException();
         }
 
         public Task UpdateProduct(Product product)

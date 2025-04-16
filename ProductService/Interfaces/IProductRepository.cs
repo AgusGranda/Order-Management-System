@@ -2,7 +2,7 @@
 
 namespace ProductService.Interfaces
 {
-    public interface IProductService
+    public interface IProductRepository
     {
         Task<List<Product>> GetAllProducts();
         Task<Product> GetOneProduct(int productId);
