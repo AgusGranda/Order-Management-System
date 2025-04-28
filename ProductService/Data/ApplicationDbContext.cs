@@ -22,7 +22,7 @@ namespace ProductService.Data
             {
                 entity.HasKey(entity => entity.IdProduct);
 
-                entity.Property(e=> e.Desactivated)
+                entity.Property(e=> e.Deactivated)
                         .HasDefaultValue(false);
 
                 entity.Property(e => e.Deleted)
@@ -41,7 +41,7 @@ namespace ProductService.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProductImage_Products");
 
-                entity.Property(e => e.Desactivated)
+                entity.Property(e => e.Deactivated)
                         .HasDefaultValue(false);
                 entity.Property(e => e.Deleted)
                         .HasDefaultValue(false);
