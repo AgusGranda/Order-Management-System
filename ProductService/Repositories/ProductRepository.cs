@@ -1,4 +1,5 @@
-﻿using ProductService.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ProductService.Data;
 using ProductService.Interfaces;
 using ProductService.Models;
 
@@ -6,8 +7,8 @@ namespace ProductService.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly DbContext _dbContext;
-        public ProductRepository(DbContext dbContext) 
+        private readonly ApplicationDbContext _dbContext;
+        public ProductRepository(ApplicationDbContext dbContext) 
         {
             _dbContext = dbContext;
         }
@@ -29,9 +30,9 @@ namespace ProductService.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<Product>> GetAllProducts()
+        public async Task<List<Product>> GetAllProducts()
         {
-            return _dbContext.Products.ToList();
+            return await _dbContext.Products.ToListAsync();
         }
 
         public Task<Product> GetOneProduct(int productId)

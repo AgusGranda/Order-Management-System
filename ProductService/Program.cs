@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ProductService.Data;
 using ProductService.Interfaces;
 using ProductService.Services;
 
@@ -13,6 +15,10 @@ builder.Services.AddSwaggerGen();
 // Dependency Injection
 builder.Services.AddScoped<ProductServiceImp>();
 
+
+//Database Connection
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Interfaces
 builder.Services.AddScoped<IProductService, ProductServiceImp>();
