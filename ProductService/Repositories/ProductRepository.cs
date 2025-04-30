@@ -15,19 +15,45 @@ namespace ProductService.Repositories
 
 
 
-        public Task AddProduct(Product product)
+        public Task<Product> AddProduct(Product product)
         {
-            throw new NotImplementedException();
+           _dbContext.Products.Add(product);
+           _dbContext.SaveChangesAsync();
+
+            return Task.FromResult(product);
         }
 
-        public Task DeleteProduct(int productId)
+        public async Task<bool> DeleteProduct(Product productToDelete)
         {
-            throw new NotImplementedException();
+            try
+            {
+                productToDelete.Deleted = true;
+                await _dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
-        public Task DesactivateProduct(int productId)
+        public async Task<bool> DesactivateProduct(Product productToDesactivate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                productToDesactivate.Deactivated = !productToDesactivate.Deactivated;
+                await _dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<List<Product>> GetAllProducts()
@@ -35,14 +61,21 @@ namespace ProductService.Repositories
             return await _dbContext.Products.ToListAsync();
         }
 
-        public Task<Product> GetOneProduct(int productId)
+        public async Task<Product> GetOneProduct(int productId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Products.FirstOrDefaultAsync(x => x.IdProduct == productId);
+        }
+        public async Task<Product> GetProductByName(string productName)
+        {
+            return await _dbContext.Products.FirstOrDefaultAsync(x => x.Name == productName);
+
         }
 
-        public Task UpdateProduct(Product product)
+        public async Task<Product> UpdateProduct(Product product)
         {
-            throw new NotImplementedException();
+            _dbContext.Products.Update(product);
+            await _dbContext.SaveChangesAsync();
+            return product;
         }
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProductService.Data;
 using ProductService.Interfaces;
+using ProductService.Repositories;
 using ProductService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Dependency Injection
-builder.Services.AddScoped<ProductServiceImp>();
-
+builder.Services.AddScoped<IProductService, ProductServiceImp>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 //Database Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
