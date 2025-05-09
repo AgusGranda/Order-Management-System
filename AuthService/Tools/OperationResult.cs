@@ -1,4 +1,4 @@
-﻿namespace ProductService.Tools
+﻿namespace AuthService.Tools
 {
     public class OperationResult<T>
     {

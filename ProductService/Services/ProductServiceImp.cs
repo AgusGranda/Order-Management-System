@@ -29,14 +29,14 @@ namespace ProductService.Services
             return product;
         }
 
-        public async Task<OperationResult> AddProduct(Product product)
+        public async Task<OperationResult<Product>> AddProduct(Product product)
         {
             
             var productExist = await _productRepository.GetProductByName(product.Name);
 
             if (productExist != null)
             {
-                return new OperationResult
+                return new OperationResult<Product>
                 {
                     Success = false,
                     Message = "Product already exists",
@@ -45,7 +45,7 @@ namespace ProductService.Services
             }
             var createdProduct =  await _productRepository.AddProduct(product);
 
-            return new OperationResult
+            return new OperationResult<Product>
             {
                 Success = true,
                 Message = "Product created successfully",
@@ -53,7 +53,7 @@ namespace ProductService.Services
             }; 
         }
 
-        public async Task<OperationResult> UpdateProduct(int idProduct, Product product)
+        public async Task<OperationResult<Product>> UpdateProduct(int idProduct, Product product)
         {
             var productExist = await _productRepository.GetOneProduct(idProduct);
 
@@ -63,14 +63,14 @@ namespace ProductService.Services
             var productUpdated = await _productRepository.UpdateProduct(product);
             if (productUpdated == null)
             {
-                return new OperationResult
+                return new OperationResult<Product>
                 {
                     Success = false,
                     Message = "Product not updated",
                     Data = null
                 };
             }
-            return new OperationResult
+            return new OperationResult<Product>
             {
                 Success = true,
                 Message = "Product updated successfully",
@@ -78,20 +78,20 @@ namespace ProductService.Services
             };
         }
 
-        public async Task<OperationResult> DesactivateProduct(int productId)
+        public async Task<OperationResult<Product>> DesactivateProduct(int productId)
         {
             var productToDesactivate = await _productRepository.GetOneProduct(productId);
             if(productToDesactivate == null)
                 throw new NotFoundException();
             bool productDesactivated = await _productRepository.DesactivateProduct(productToDesactivate);
-            return new OperationResult
+            return new OperationResult<Product>
             {
                 Success = true,
                 Message = "Product desactivated successfully",
                 Data = null
             };
         }
-        public async Task<OperationResult> DeleteProduct(int productId)
+        public async Task<OperationResult<Product>> DeleteProduct(int productId)
         {
 
             try
@@ -104,7 +104,7 @@ namespace ProductService.Services
                 if (!productDeleted)
                     throw new Exception();
 
-                return new OperationResult
+                return new OperationResult<Product>
                 {
                     Success = true,
                     Message = "Product deleted successfully",

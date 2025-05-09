@@ -53,15 +53,18 @@ namespace ProductService.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<OperationResult>> AddProduct(Product product)
+        public async Task<ActionResult> AddProduct(Product product)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return UnprocessableEntity(ModelState);
 
-                await _IProductService.AddProduct(product);
-                return CreatedAtAction("GetOneProduct", new { id = product.IdProduct } , product);
+                var result = await _IProductService.AddProduct(product);
+                if(!result.Success)
+                    return BadRequest(result.Message);
+
+                return CreatedAtAction("GetOneProduct", new { id = result.Data.IdProduct } , result.Data);
             }
             catch(DbUpdateException ex)
             {
@@ -75,7 +78,7 @@ namespace ProductService.Controllers
 
         // Activa o desactiva un producto
         [HttpPatch("{idProduct}")]
-        public async Task<ActionResult<OperationResult>> UpdateActiveProduct(int idProduct)
+        public async Task<ActionResult<OperationResult<Product>>> UpdateActiveProduct(int idProduct)
         {
             try
             {

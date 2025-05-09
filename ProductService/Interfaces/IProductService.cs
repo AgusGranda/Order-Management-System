@@ -7,9 +7,9 @@ namespace ProductService.Interfaces
     {
         Task<List<Product>> GetAllProducts();
         Task<Product> GetOneProduct(int productId);
-        Task<OperationResult> AddProduct(Product product);
-        Task<OperationResult> UpdateProduct(int idProduct,Product product);
-        Task<OperationResult> DesactivateProduct(int productId);
-        Task<OperationResult> DeleteProduct(int productId);
+        Task<OperationResult<Product>> AddProduct(Product product);
+        Task<OperationResult<Product>> UpdateProduct(int idProduct,Product product);
+        Task<OperationResult<Product>> DesactivateProduct(int productId);
+        Task<OperationResult<Product>> DeleteProduct(int productId);
     }
 }
