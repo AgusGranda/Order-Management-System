@@ -1,33 +1,86 @@
 ﻿using AuthService.Interfaces;
 using AuthService.Models;
 using AuthService.Tools;
+using SendGrid.Helpers.Errors.Model;
 
 namespace AuthService.Services
 {
     public class UserService : IUserService
-    {
-        public Task<OperationResult<List<User>>> GetUsers()
+    {   
+        private readonly IUserRepository _userRepository;
+        public UserService(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
         }
-        public Task<OperationResult<User>> GetUser(int id)
+
+        public async Task<OperationResult<List<User>>> GetUsers()
         {
-            throw new NotImplementedException();
+            var result = await _userRepository.GetUsers();
+            return new OperationResult<List<User>>
+            {
+                Success = true,
+                Message = "Users retrieved successfully",
+                Data = result
+            };
+        }
+        public async Task<OperationResult<User>> GetUser(int id)
+        {
+            var user = await _userRepository.GetUser(id);
+            if (user == null)
+                throw new NotFoundException("User not found");
+            return new OperationResult<User>
+            {
+                Success = true,
+                Message = "User retrieved successfully",
+                Data = user
+            };
         }
 
 
-        public Task<OperationResult<User>> UpdateUser(int id, User userToUpdate)
+        public async Task<OperationResult<User>> UpdateUser(int id, User userUpdated)
         {
-            throw new NotImplementedException();
+            var userToUpdate = await _userRepository.GetUser(id);
+            if (userToUpdate == null)
+                throw new NotFoundException("User not found");
+
+            await _userRepository.UpdateUser(userUpdated);
+            return new OperationResult<User>
+            {
+                Success = true,
+                Message = "User updated successfully",
+                Data = userUpdated
+            };
+
         }
-        public Task<OperationResult<User>> DesactivateUser(int id)
+        public async Task<OperationResult<User>> DesactivateUser(int id)
         {
-            throw new NotImplementedException();
+            var userToDesactivate = await _userRepository.GetUser(id);
+            if (userToDesactivate == null)
+                throw new NotFoundException();
+
+            await _userRepository.DesactivateUser(userToDesactivate);
+            return new OperationResult<User>
+            {
+                Success = true,
+                Message = "User desactivated successfully",
+                Data = userToDesactivate
+            };
         }
 
-        public Task<OperationResult<User>> DeleteUser(int userId)
+        public async Task<OperationResult<User>> DeleteUser(int userId)
         {
-            throw new NotImplementedException();
+            var userToDelete = _userRepository.GetUser(userId);
+            if (userToDelete == null)
+                throw new NotFoundException();
+
+            await _userRepository.DeleteUser(userToDelete.Result);
+            return new OperationResult<User>
+            {
+                Success = true,
+                Message = "User deleted successfully",
+                Data = null
+            };
+
         }
     }
 }

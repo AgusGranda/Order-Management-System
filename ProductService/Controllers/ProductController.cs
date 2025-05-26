@@ -53,7 +53,7 @@ namespace ProductService.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> AddProduct(Product product)
+        public async Task<ActionResult<Product>> AddProduct(Product product)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace ProductService.Controllers
 
         // Activa o desactiva un producto
         [HttpPatch("{idProduct}")]
-        public async Task<ActionResult<OperationResult<Product>>> UpdateActiveProduct(int idProduct)
+        public async Task<ActionResult> UpdateActiveProduct(int idProduct)
         {
             try
             {

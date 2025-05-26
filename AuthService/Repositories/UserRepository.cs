@@ -1,6 +1,7 @@
 ﻿using AuthService.Data;
 using AuthService.Interfaces;
 using AuthService.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Repositories
 {
@@ -13,28 +14,38 @@ namespace AuthService.Repositories
             _context = context;
         }
 
-        public Task<List<User>> GetUsers()
+        public async Task<List<User>> GetUsers()
         {
-            throw new NotImplementedException();
+            return await _context.Users.Where(x => x.Deleted == false).ToListAsync();   
         }
-        public Task<User> GetUser(int id)
+        public async Task<User> GetUser(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<object> GetUserByEmail(string email)
-        {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-
-        public Task<User> UpdateUser(User userToUpdate)
+        public async Task<object> GetUserByEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email && x.Deleted == false);
         }
-        public Task<User> DesactivateUser(User userToDesactivate)
+
+
+        public async Task<User> UpdateUser(User userUpdated)
         {
-            throw new NotImplementedException();
+            userUpdated.UpdatedAt = DateTime.UtcNow;
+            _context.Users.Update(userUpdated);
+            await _context.SaveChangesAsync();
+            return userUpdated;
+
+
+        }
+        public async Task<User> DesactivateUser(User userToDesactivate)
+        {
+            userToDesactivate.Desactivated = true;
+            userToDesactivate.UpdatedAt = DateTime.UtcNow;
+
+            _context.Users.Update(userToDesactivate);
+            await _context.SaveChangesAsync();
+            return userToDesactivate;
         }
         public async Task<User> DeleteUser(User userToDelete)
         {

@@ -1,83 +1,76 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AuthService.Interfaces;
+using AuthService.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 
 namespace AuthService.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
-        // GET: UserController
-        public ActionResult Index()
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
         {
-            return View();
+            _userService = userService;
         }
 
-        // GET: UserController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> Get()
         {
-            return View();
+            var result = await _userService.GetUsers();
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+            return Ok(result.Data);
         }
-
-        // GET: UserController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: UserController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> Get(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var result = await _userService.GetUser(id);
+                if (!result.Success)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result.Data);
             }
-            catch
+            catch (NotFoundException ex)
             {
-                return View();
+                return NotFound(new { message = ex.Message });
             }
         }
 
-        // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: UserController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<User>> Update(int id, User userUpdated)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var result = await _userService.UpdateUser(id, userUpdated);
+                if (!result.Success)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result.Data);
             }
-            catch
+            catch (NotFoundException ex)
             {
-                return View();
+                return NotFound(new { message = ex.Message });
             }
         }
-
-        // GET: UserController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: UserController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<User>> Desactivate(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var result = await _userService.DesactivateUser(id);
+                if (!result.Success)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result.Data);
             }
-            catch
+            catch (NotFoundException ex)
             {
-                return View();
+                return NotFound(new { message = ex.Message });
             }
+
         }
     }
 }

@@ -17,7 +17,7 @@ namespace AuthService.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetRoles()
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
             try
             {
@@ -35,7 +35,7 @@ namespace AuthService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Role rol)
+        public async Task<ActionResult<Role>> Create(Role rol)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace AuthService.Controllers
 
         
         [HttpPut]
-        public async Task<ActionResult> Edit(int id, Role RoleEdited)
+        public async Task<ActionResult<Role>> Edit(int id, Role RoleEdited)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace AuthService.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult<Role>> Delete(int id)
         {
             try
             {
@@ -77,9 +77,9 @@ namespace AuthService.Controllers
                     return BadRequest(new { message = result.Message });
                 return Ok(result.Data);
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return StatusCode(500, ex.Message);
             }
         }
     }
