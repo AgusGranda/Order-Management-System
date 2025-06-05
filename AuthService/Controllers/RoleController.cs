@@ -1,4 +1,5 @@
-﻿using AuthService.Models;
+﻿using AuthService.DTOs;
+using AuthService.Models;
 using AuthService.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,7 +53,7 @@ namespace AuthService.Controllers
 
         
         [HttpPut]
-        public async Task<ActionResult<Role>> Edit(int id, Role RoleEdited)
+        public async Task<ActionResult<Role>> Edit(int id, RoleUpdateDTO RoleEdited)
         {
             try
             {

@@ -18,12 +18,12 @@ namespace AuthService.Repositories
         {
             return await _context.Users.Where(x => x.Deleted == false).ToListAsync();   
         }
-        public async Task<User> GetUser(int id)
+        public async Task<User?> GetUser(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id && !x.Deleted);
         }
 
-        public async Task<object> GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == email && x.Deleted == false);
         }
@@ -31,11 +31,10 @@ namespace AuthService.Repositories
 
         public async Task<User> UpdateUser(User userUpdated)
         {
-            userUpdated.UpdatedAt = DateTime.UtcNow;
+
             _context.Users.Update(userUpdated);
             await _context.SaveChangesAsync();
             return userUpdated;
-
 
         }
         public async Task<User> DesactivateUser(User userToDesactivate)

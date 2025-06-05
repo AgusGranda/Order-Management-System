@@ -1,4 +1,5 @@
-﻿using AuthService.Interfaces;
+﻿using AuthService.DTOs;
+using AuthService.Interfaces;
 using AuthService.Models;
 using AuthService.Tools;
 using SendGrid.Helpers.Errors.Model;
@@ -37,18 +38,20 @@ namespace AuthService.Services
         }
 
 
-        public async Task<OperationResult<User>> UpdateUser(int id, User userUpdated)
+        public async Task<OperationResult<User>> UpdateUser(int id, UserUpdateDTO userUpdated)
         {
             var userToUpdate = await _userRepository.GetUser(id);
             if (userToUpdate == null)
                 throw new NotFoundException("User not found");
 
-            await _userRepository.UpdateUser(userUpdated);
+
+
+            await _userRepository.UpdateUser(userToUpdate);
             return new OperationResult<User>
             {
                 Success = true,
                 Message = "User updated successfully",
-                Data = userUpdated
+                Data = userToUpdate
             };
 
         }
@@ -71,7 +74,7 @@ namespace AuthService.Services
         {
             var userToDelete = _userRepository.GetUser(userId);
             if (userToDelete == null)
-                throw new NotFoundException();
+                throw new NotFoundException("User not found");
 
             await _userRepository.DeleteUser(userToDelete.Result);
             return new OperationResult<User>

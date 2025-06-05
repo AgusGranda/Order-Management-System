@@ -1,6 +1,8 @@
-﻿using AuthService.Interfaces;
+﻿using AuthService.DTOs;
+using AuthService.Interfaces;
 using AuthService.Models;
 using AuthService.Tools;
+using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
 
 namespace AuthService.Services
@@ -8,9 +10,11 @@ namespace AuthService.Services
     public class RoleService : IRoleService
     {
         private readonly IRoleRepository  _roleRepository; 
-        public RoleService( IRoleRepository roleRepository)
+        private readonly IMapper _mapper;
+        public RoleService( IRoleRepository roleRepository, IMapper mapper)
         {
             _roleRepository = roleRepository;
+            _mapper = mapper;
         }
         public async Task<OperationResult<List<Role>>> GetAllRoles()
         {
@@ -50,18 +54,21 @@ namespace AuthService.Services
         }
 
 
-        public async Task<OperationResult<Role>> UpdateRole(int id, Role roleUpdated)
+        public async Task<OperationResult<Role>> UpdateRole(int id, RoleUpdateDTO roleUpdated)
         {
             var roleToUpdate = await _roleRepository.GetRole(id);
             if (roleToUpdate == null)
                 throw new NotFoundException("");
 
-            await _roleRepository.UpdateRole(roleUpdated);
+            _mapper.Map(roleUpdated, roleToUpdate);
+            roleToUpdate.UpdatedAt = DateTime.UtcNow;
+
+            await _roleRepository.UpdateRole(roleToUpdate);
             return new OperationResult<Role>
             {
                 Success = true,
                 Message = "Role updated successfully",
-                Data = roleUpdated
+                Data = roleToUpdate
             };
         }
         public async Task<OperationResult<Role>> DeleteRole(int id)
