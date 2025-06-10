@@ -26,7 +26,7 @@ namespace AuthService.Tools
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim("id", user.Id.ToString()),
-                new Claim("role", user.IdRole.ToString())
+                new Claim(ClaimTypes.Role, user.RoleNavegation.Name)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -43,7 +43,7 @@ namespace AuthService.Tools
             return new TokenResponse
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = "", // podés generar uno real después
+                RefreshToken = "", // generar uno real después
                 Expiration = expires
             };
         }

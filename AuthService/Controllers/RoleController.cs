@@ -1,8 +1,11 @@
 ﻿using AuthService.DTOs;
+using AuthService.Interfaces;
 using AuthService.Models;
 using AuthService.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 
 namespace AuthService.Controllers
 {
@@ -11,8 +14,8 @@ namespace AuthService.Controllers
     public class RoleController : Controller
     {
 
-        private readonly RoleService _roleService;
-        public RoleController(RoleService roleService) 
+        private readonly IRoleService _roleService;
+        public RoleController(IRoleService roleService) 
         {
             _roleService = roleService;
         }
@@ -35,7 +38,31 @@ namespace AuthService.Controllers
             }
         }
 
+        [HttpGet("{idRole}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Role>> GetOneRole(int idRole)
+        {
+            try
+            {
+                var result = await _roleService.GetRole(idRole);
+                if (!result.Success)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result.Data);
+
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Role>> Create(Role rol)
         {
             try

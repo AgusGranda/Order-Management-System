@@ -1,4 +1,5 @@
-﻿using AuthService.Interfaces;
+﻿using AuthService.DTOs;
+using AuthService.Interfaces;
 using AuthService.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,7 @@ namespace AuthService.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<User>> Update(int id, User userUpdated)
+        public async Task<ActionResult<User>> Update(int id, UserUpdateDTO userUpdated)
         {
             try
             {

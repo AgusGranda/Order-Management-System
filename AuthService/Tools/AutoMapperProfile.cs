@@ -10,6 +10,7 @@ namespace AuthService.Tools
         {
 
             CreateMap<LoginDTO, User>().ReverseMap();
+
             CreateMap<RegisterDTO, User>().ReverseMap()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<RoleUpdateDTO, Role>().ReverseMap()
