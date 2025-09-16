@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Models;
 using OrderService.Services;
-using OrderService.Tools;
 
 namespace OrderService.Controllers
 {
@@ -21,7 +20,7 @@ namespace OrderService.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles ="Admin")]
+        [Authorize]
         public async Task<ActionResult<Order>> CreateOrder(Order order)
         {
             try
@@ -31,7 +30,7 @@ namespace OrderService.Controllers
                 if (result.Success)
                     return Ok(result.Data);
 
-                else return BadRequest(result.Data);
+                return BadRequest(result.Message);
 
             }
             catch (Exception ex)

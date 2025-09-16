@@ -50,6 +50,22 @@ namespace ProductService.Controllers
                 return NotFound(new {message = ex.Message});
             }
         }
+        [HttpGet("{idProduct}/stock")]
+        public async Task<ActionResult<bool>> CheckStockAsync(int idProduct, [FromQuery] int quantity)
+        {
+            try
+            {
+                var response = await _IProductService.CheckStockAsync(idProduct,quantity);
+                if(response.Success)
+                    return Ok(response);
+                return false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
 
         [HttpPost]

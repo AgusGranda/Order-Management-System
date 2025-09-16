@@ -15,45 +15,32 @@ namespace ProductService.Repositories
 
 
 
-        public Task<Product> AddProduct(Product product)
+        public async Task<Product> AddProduct(Product product)
         {
-           _dbContext.Products.Add(product);
-           _dbContext.SaveChangesAsync();
+            try
+            {
+               _dbContext.Products.Add(product);
+               await _dbContext.SaveChangesAsync();
 
-            return Task.FromResult(product);
+               return product;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<bool> DeleteProduct(Product productToDelete)
         {
-            try
-            {
-                productToDelete.Deleted = true;
                 await _dbContext.SaveChangesAsync();
-
                 return true;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
         }
 
         public async Task<bool> DesactivateProduct(Product productToDesactivate)
         {
-            try
-            {
-                productToDesactivate.Deactivated = !productToDesactivate.Deactivated;
                 await _dbContext.SaveChangesAsync();
-
                 return true;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
         }
 
         public async Task<List<Product>> GetAllProducts()

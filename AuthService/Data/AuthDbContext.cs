@@ -27,7 +27,7 @@ namespace AuthService.Data
                 entity.Property(e => e.Deleted)
                         .HasDefaultValue(false);
                 entity.Property(e => e.IdRole)
-                        .HasDefaultValueSql("1");
+                        .HasDefaultValueSql("6");
                 entity.Property(e => e.CreatedAt)
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.HasOne(e => e.RoleNavegation)

@@ -15,11 +15,13 @@ namespace OrderService.Services
     public class OrderServiceImp : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IProductServiceClient _productServiceClient;
         private readonly OrderDbContext _dbContext;
-        public OrderServiceImp( IOrderRepository orderRepository, OrderDbContext dbContext) 
+        public OrderServiceImp(IOrderRepository orderRepository, OrderDbContext dbContext, IProductServiceClient productServiceClient)
         {
             _orderRepository = orderRepository;
             _dbContext = dbContext;
+            _productServiceClient = productServiceClient;
         }
 
 
@@ -29,16 +31,18 @@ namespace OrderService.Services
             {
                 if (order.Quantity <= 0)
                     return OperationResult<Order>.Fail("Quantity must be greater than 0");
-                
+
+
+                bool hasStock = await _productServiceClient.CheckStockAsync(order.ProductId, order.Quantity);
                 _orderRepository.CreateOrder(order);
                 await _dbContext.SaveChangesAsync();
                 return OperationResult<Order>.Ok(order);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
 
 

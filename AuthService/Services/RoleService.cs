@@ -42,15 +42,25 @@ namespace AuthService.Services
                 };
         }
 
-        public async Task<OperationResult<Role>> CreateRole(Role role)
+        public async Task<OperationResult<Role>> CreateRole(RoleCreateDTO role)
         {
-            await _roleRepository.CreateRole(role);
-            return new OperationResult<Role>
+            try
             {
-                Success = true,
-                Message = "Role created successfully",
-                Data = role
-            };
+                var newRole = _mapper.Map<Role>(role);  
+                await _roleRepository.CreateRole(newRole);
+                return new OperationResult<Role>
+                {
+                    Success = true,
+                    Message = "Role created successfully",
+                    Data = newRole
+                };
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
 

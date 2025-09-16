@@ -62,8 +62,7 @@ namespace AuthService.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Role>> Create(Role rol)
+        public async Task<ActionResult<Role>> Create(RoleCreateDTO rol)
         {
             try
             {

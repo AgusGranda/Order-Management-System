@@ -11,5 +11,6 @@ namespace ProductService.Interfaces
         Task<OperationResult<Product>> UpdateProduct(int idProduct,Product product);
         Task<OperationResult<Product>> DesactivateProduct(int productId);
         Task<OperationResult<Product>> DeleteProduct(int productId);
+        Task<OperationResult<bool>> CheckStockAsync(int productId, int quantity);
     }
 }

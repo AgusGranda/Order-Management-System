@@ -17,6 +17,9 @@ namespace AuthService.Tools
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<UserUpdateDTO, User>().ReverseMap()
                     .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));  
+            
+            CreateMap<RoleCreateDTO, Role>().ReverseMap()
+                    .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

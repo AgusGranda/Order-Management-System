@@ -28,29 +28,58 @@ namespace ProductService.Services
             }
             return product;
         }
+        public async Task<OperationResult<bool>>CheckStockAsync(int productId, int quantity)
+        {
+            var product = await _productRepository.GetOneProduct(productId);
+            if (product.Stock >= quantity)
+            {
+                return new OperationResult<bool>
+                {
+                    Success = true,
+                    Message = "Quantity Exist",
+                    Data = true
+                };
+
+            }
+
+            return new OperationResult<bool>
+            {
+                Success = false,
+                Message = "Quantity doesn't Exist",
+                Data = false
+            };
+        }
 
         public async Task<OperationResult<Product>> AddProduct(Product product)
         {
-            
-            var productExist = await _productRepository.GetProductByName(product.Name);
-
-            if (productExist != null)
+            try
             {
+
+                var productExist = await _productRepository.GetProductByName(product.Name);
+
+                if (productExist != null)
+                {
+                    return new OperationResult<Product>
+                    {
+                        Success = false,
+                        Message = "Product already exists",
+                        Data = null
+                    };
+                }
+                var createdProduct =  await _productRepository.AddProduct(product);
+
                 return new OperationResult<Product>
                 {
-                    Success = false,
-                    Message = "Product already exists",
-                    Data = null
-                };
+                    Success = true,
+                    Message = "Product created successfully",
+                    Data = createdProduct
+                }; 
             }
-            var createdProduct =  await _productRepository.AddProduct(product);
-
-            return new OperationResult<Product>
+            catch (Exception ex)
             {
-                Success = true,
-                Message = "Product created successfully",
-                Data = createdProduct
-            }; 
+
+                throw ex;
+            }
         }
 
         public async Task<OperationResult<Product>> UpdateProduct(int idProduct, Product product)
@@ -80,16 +109,26 @@ namespace ProductService.Services
 
         public async Task<OperationResult<Product>> DesactivateProduct(int productId)
         {
-            var productToDesactivate = await _productRepository.GetOneProduct(productId);
-            if(productToDesactivate == null)
-                throw new NotFoundException();
-            bool productDesactivated = await _productRepository.DesactivateProduct(productToDesactivate);
-            return new OperationResult<Product>
+            try
             {
-                Success = true,
-                Message = "Product desactivated successfully",
-                Data = null
-            };
+                var productToDesactivate = await _productRepository.GetOneProduct(productId);
+                if(productToDesactivate == null)
+                    throw new NotFoundException();
+                
+                productToDesactivate.Deactivated = !productToDesactivate.Deactivated;
+                bool productDesactivated = await _productRepository.DesactivateProduct(productToDesactivate);
+                return new OperationResult<Product>
+                {
+                    Success = true,
+                    Message = "Product desactivated successfully",
+                    Data = null
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         public async Task<OperationResult<Product>> DeleteProduct(int productId)
         {
@@ -100,6 +139,7 @@ namespace ProductService.Services
                 if (productToDelete == null)
                     throw new NotFoundException();
 
+                productToDelete.Deleted = true;
                 bool productDeleted = await _productRepository.DesactivateProduct(productToDelete);
                 if (!productDeleted)
                     throw new Exception();
